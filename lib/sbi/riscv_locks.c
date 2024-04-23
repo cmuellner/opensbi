@@ -61,7 +61,8 @@ void spin_lock(spinlock_t *lock)
 		"1:	and	%2, %0, %5\n"
 		"	beq	%1, %2, 2f\n"
 
-		/* If not, then spin on the lock. */
+		/* If not, then issue a PAUSE hint and spin on the lock. */
+		"	.insn	i 0x0f, 0, x0, x0, 0x010\n"
 		"	lw	%0, %3\n"
 		RISCV_ACQUIRE_BARRIER
 		"	j	1b\n"
